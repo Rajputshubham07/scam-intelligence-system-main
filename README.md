@@ -347,7 +347,7 @@ Built with:
 
 ## 📞 Contact
 
-**GitHub**: [Shivang1109/scam-intelligence-system](https://github.com/Shivang1109/scam-intelligence-system)
+**GitHub**: [RajputShubham07/scam-intelligence-system](https://github.com/Rajputshubham07/scam-intelligence-system-main)
 
 **Live Demo**: [https://scam-intelligence-system.onrender.com/](https://scam-intelligence-system.onrender.com/)
 
