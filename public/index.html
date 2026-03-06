@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ScamShield — AI Honeypot Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne+Mono&family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header>
+<div class="logo">
+<div class="logo-icon">⬡</div>
+<div class="logo-text">Scam<span>Shield</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:24px;font-family:'Syne Mono',monospace;font-size:12px;color:var(--muted)">
+<span>AI HONEYPOT PLATFORM</span>
+<span id="totalScans" style="font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--accent)">0 INTERCEPTS</span>
+<div id="apiStatus" class="api-status" style="display:none"></div>
+<div class="header-status">
+<div class="pulse"></div>
+LIVE
+</div>
+</div>
+</header>
+
+<div class="layout">
+<!-- LEFT: CHAT -->
+<div class="chat-panel panel">
+<div class="panel-header">
+<span class="panel-title">// SCAMMER SIMULATION CONSOLE</span>
+<div style="display:flex;align-items:center;gap:10px">
+<span id="conversationDuration" style="font-family:'Syne Mono',monospace;font-size:11px;color:var(--accent);display:none">⏱ 00:00</span>
+<span class="state-badge" id="convState">IDLE</span>
+<button class="new-conv-btn" onclick="newConversation()">↺ NEW SESSION</button>
+<button class="export-btn" id="exportBtn" onclick="exportConversation()" style="display:none" title="Export conversation as JSON">
+<i class="fas fa-download"></i>
+</button>
+</div>
+</div>
+
+<div class="chat-messages" id="chatMessages">
+<div class="empty-state">
+<div class="empty-icon">🎯</div>
+<div class="empty-text">SELECT A SCAM PRESET OR TYPE A MESSAGE<br>TO ENGAGE THE AI HONEYPOT AGENT</div>
+</div>
+</div>
+
+<div class="chat-input-area">
+<div class="scammer-presets">
+<span style="font-family:'Syne Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;align-self:center">PRESETS ›</span>
+<button class="preset-btn" onclick="usePreset('irs')">🏛️ IRS</button>
+<button class="preset-btn" onclick="usePreset('bank')">🏦 BANK</button>
+<button class="preset-btn" onclick="usePreset('tech')">💻 TECH</button>
+<button class="preset-btn" onclick="usePreset('romance')">💌 ROMANCE</button>
+<button class="preset-btn" onclick="usePreset('crypto')">₿ CRYPTO</button>
+<button class="preset-btn" onclick="usePreset('lottery')">🎰 LOTTERY</button>
+<button class="preset-btn" onclick="usePreset('grandparent')">👵 GRANDPARENT</button>
+<button class="preset-btn" onclick="usePreset('amazon')">📦 AMAZON</button>
+<button class="preset-btn" onclick="usePreset('social')">📱 SOCIAL</button>
+<button class="preset-btn" onclick="usePreset('refund')">💰 REFUND</button>
+<button class="preset-btn" onclick="usePreset('job')">💼 JOB</button>
+<button class="preset-btn" onclick="usePreset('charity')">❤️ CHARITY</button>
+</div>
+<div class="input-row">
+<input class="chat-input" id="chatInput" placeholder="Type as the scammer..." onkeydown="if(event.key==='Enter')sendMessage()" />
+<button class="send-btn" id="sendBtn" onclick="sendMessage()">SEND ➤</button>
+</div>
+</div>
+</div>
+
+<!-- RIGHT COL -->
+<div class="right-col panel">
+<!-- Risk Meter -->
+<div class="risk-panel">
+<div style="font-family:'Syne Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:14px">THREAT ASSESSMENT</div>
+<div class="risk-display">
+<div class="risk-circle-wrap">
+<svg class="risk-svg" width="100" height="100" viewBox="0 0 100 100">
+<circle class="risk-track" cx="50" cy="50" r="40"/>
+<circle class="risk-fill" id="riskArc" cx="50" cy="50" r="40" stroke="var(--safe)"/>
+</svg>
+<div class="risk-number">
+<div class="risk-score-val" id="riskVal" style="color:var(--safe)">0</div>
+<div class="risk-score-label">/100</div>
+</div>
+</div>
+<div class="risk-info">
+<div class="risk-level-badge low" id="riskBadge">LOW RISK</div>
+<div class="scam-type" id="scamType">No threat detected</div>
+<div class="scam-confidence" id="scamConf">Awaiting data...</div>
+</div>
+</div>
+</div>
+
+<!-- Signals -->
+<div class="signals-area">
+<div class="panel-header" style="padding:14px 20px;flex-shrink:0;">
+<span class="panel-title">// DETECTED SIGNALS</span>
+<span id="signalCount" style="font-family:'Syne Mono',monospace;font-size:11px;color:var(--muted)">0</span>
+</div>
+<div class="signals-scroll" id="signalsList">
+<div class="empty-state">
+<div class="empty-icon">📡</div>
+<div class="empty-text">MONITORING FOR SIGNALS</div>
+</div>
+</div>
+</div>
+
+<!-- Entities -->
+<div class="entities-panel">
+<div style="font-family:'Syne Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:10px">EXTRACTED INTELLIGENCE</div>
+<div id="entitiesList">
+<span style="font-family:'Syne Mono',monospace;font-size:11px;color:var(--muted)">No entities extracted yet</span>
+</div>
+</div>
+
+<!-- AI Analysis -->
+<div class="ai-panel">
+<div style="font-family:'Syne Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+<span>AI ANALYSIS</span>
+<span class="ai-badge" id="aiBadge" style="display:none">
+<i class="fas fa-robot"></i> GPT-4
+</span>
+</div>
+<div id="aiReasoning" style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.6">
+Awaiting analysis...
+</div>
+</div>
+
+<!-- Persona -->
+<div class="persona-panel">
+<div style="font-family:'Syne Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:10px">ACTIVE PERSONA</div>
+<div id="personaInfo">
+<span style="font-family:'Syne Mono',monospace;font-size:11px;color:var(--muted)">No persona assigned yet</span>
+</div>
+</div>
+
+<!-- State History -->
+<div class="state-history-panel">
+<div style="font-family:'Syne Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:10px">STATE TIMELINE</div>
+<div id="stateHistory" class="state-timeline">
+<span style="font-family:'Syne Mono',monospace;font-size:11px;color:var(--muted)">No state transitions yet</span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="statusbar">
+<div class="statusbar-item active">
+<div class="pulse" style="width:6px;height:6px"></div>
+HONEYPOT ONLINE
+</div>
+<div class="statusbar-item" id="sbMessages">MESSAGES: 0</div>
+<div class="statusbar-item" id="sbEntities">ENTITIES: 0</div>
+<div class="statusbar-item" id="sbConvId">SESSION: —</div>
+<div class="statusbar-item" style="margin-left:auto;color:var(--accent)">ScamShield v2.0 // AI Honeypot Intelligence</div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

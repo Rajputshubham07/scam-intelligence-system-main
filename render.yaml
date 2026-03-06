@@ -1,0 +1,26 @@
+services:
+  # Web Service (API + Frontend)
+  - type: web
+    name: scam-intel-api
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: node simple-server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: LOG_LEVEL
+        value: info
+    healthCheckPath: /health
+    autoDeploy: true
+
+databases:
+  # PostgreSQL Database
+  - name: scam-intel-db
+    databaseName: scam_intelligence
+    user: scam_intel_user
+    plan: starter
+    region: oregon
