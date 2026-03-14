@@ -8,7 +8,7 @@
 
 ## 🌐 Live Demo
 
-**🚀 Try it now:** [https://scam-intelligence-system.onrender.com/](https://scam-intelligence-system.onrender.com/)
+**🚀 Try it now:** [https://scam-intelligence-system.onrender.com/](https://scam-intelligence-system-main.onrender.com/)
 
 **API Health:** [https://scam-intelligence-system.onrender.com/health](https://scam-intelligence-system.onrender.com/health)
 
